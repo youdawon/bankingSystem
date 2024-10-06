@@ -3,6 +3,7 @@ package com.bank.account;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.locks.ReentrantLock;
 
 import com.bank.util.Constant;
 
@@ -14,6 +15,8 @@ public class BankAccount {
 	private double balance;
 	private Map<Long, History> accountHistory;
 	private AtomicLong historyId;
+	private final ReentrantLock lock;
+
 
 	public BankAccount(AccountHolder accountHolder, Long accountNumber, int pinNumber, double amount) {
 		this.accountNumber = accountNumber;
@@ -22,6 +25,7 @@ public class BankAccount {
 		this.balance = amount;
 		this.accountHistory = new LinkedHashMap<>();
 		this.historyId = new AtomicLong(Constant.UNIQUE_NUMBER_INITIAL_VALUE);
+		this.lock = new ReentrantLock();
 	}
 
 	public double getBalance() {
@@ -62,5 +66,9 @@ public class BankAccount {
 
 	public void setHistoryId(AtomicLong historyId) {
 		this.historyId = historyId;
+	}
+
+	public ReentrantLock getLock() {
+		return lock;
 	}
 }
