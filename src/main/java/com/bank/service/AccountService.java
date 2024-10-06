@@ -10,6 +10,7 @@ import com.bank.account.CommercialAccount;
 import com.bank.account.CommercialSavingAccount;
 import com.bank.account.Person;
 import com.bank.account.SavingsAccount;
+import com.bank.factory.BankAccountFactory;
 import com.bank.util.Constant;
 
 public class AccountService {
@@ -19,14 +20,7 @@ public class AccountService {
 
 	public BankAccount createAccount(AccountHolder accountHolder, int pinNumber, double amount, double cardLimit, double interestRate,  Constant.AccountType accountType) throws Exception {
 		long accountNumber = this.id.incrementAndGet();
-
-		BankAccount bankAccount;
-		switch (accountType){
-			case CHECKING -> bankAccount = new CheckingAccount(accountHolder, accountNumber, pinNumber, amount, cardLimit);
-			case SAVING -> bankAccount = new SavingsAccount(accountHolder, accountNumber, pinNumber, amount, interestRate);
-			case COMMERCIAL_SAVING -> bankAccount = new CommercialSavingAccount(accountHolder, accountNumber, pinNumber, amount, interestRate);
-			default -> throw new Exception("Unknown account type");
-		}
+		BankAccount bankAccount = BankAccountFactory.openBankAccount(accountNumber, accountHolder,  pinNumber,  amount,  cardLimit,  interestRate,  accountType);
 		return registerAccount(accountNumber, bankAccount);
 	}
 
