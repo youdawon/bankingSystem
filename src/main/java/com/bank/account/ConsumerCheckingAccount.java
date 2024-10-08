@@ -1,29 +1,28 @@
 package com.bank.account;
 
-import com.bank.account.ConsumerSavingsAccount.Builder;
+
+import com.bank.account.CommercialCheckingAccount.Builder;
 import com.bank.stretegy.AccountStrategy;
-import com.bank.stretegy.CommercialSavingsStrategy;
-import com.bank.stretegy.SavingsStrategy;
-import java.util.HashSet;
-import java.util.Set;
 
-public class CommercialSavingAccount extends BankAccount {
+public class ConsumerCheckingAccount extends BankAccount {
 
-  Set<Person> authorizedUsers;
+  private double cardLimit;
 
-  private CommercialSavingAccount(AccountHolder accountHolder, Long accountNumber, int pinNumber,
-      double amount, double interestRate, AccountStrategy accountStrategy) {
+  private ConsumerCheckingAccount(AccountHolder accountHolder, Long accountNumber, int pinNumber,
+      double amount, double cardLimit, double interestRate, AccountStrategy accountStrategy) {
     super(accountHolder, accountNumber, pinNumber, amount, interestRate, accountStrategy);
-    authorizedUsers = new HashSet<>();
+    this.cardLimit = cardLimit;
     if (super.getInterestRate() == 0) {
       super.setInterestRate(super.getAccountStrategy().applyInterest());
     }
   }
 
-  public void addAuthorizedUser(Person person) {
-    synchronized (this) {
-      this.authorizedUsers.add(person);
-    }
+  public double getCardLimit() {
+    return cardLimit;
+  }
+
+  public void setCardLimit(double cardLimit) {
+    this.cardLimit = cardLimit;
   }
 
   public static class Builder {
@@ -71,9 +70,9 @@ public class CommercialSavingAccount extends BankAccount {
       return this;
     }
 
-    public CommercialCheckingAccount build() {
-      return new CommercialCheckingAccount(accountHolder, accountNumber, pinNumber, balance,
-          interestRate, accountStrategy);
+    public ConsumerCheckingAccount build() {
+      return new ConsumerCheckingAccount(accountHolder, accountNumber, pinNumber, balance,
+          interestRate, cardLimit, accountStrategy);
     }
   }
 

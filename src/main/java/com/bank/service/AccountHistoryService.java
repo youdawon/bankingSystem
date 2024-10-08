@@ -12,30 +12,43 @@ import com.bank.util.Constant;
 public class AccountHistoryService {
 
 
-	public  void updateAccountHistory(BankAccount bankAccount, Constant.TransactionType type, double amount, double balance, Long creditedAccountNumber) {
-		Long historyId = bankAccount.getHistoryId().incrementAndGet();
+  public void updateAccountHistory(BankAccount bankAccount, Constant.TransactionType type,
+      double amount, double balance, Long fromAccountNumber, Long toAccountNumber) {
+    Long historyId = bankAccount.getHistoryId().incrementAndGet();
 
-		Optional<Long> credited = Optional.ofNullable(creditedAccountNumber);
-		History history = credited.map(his -> new History(historyId, type, amount, balance, creditedAccountNumber))
-			.orElse(new History(historyId, type, amount, balance));
+    History.Builder historyBuilder = new History.Builder()
+        .historyId(historyId)
+        .type(type)
+        .amount(amount)
+        .balance(balance);
 
-		synchronized(this) {
-			bankAccount.getAccountHistory().put(historyId, history);
-		}
-	}
+    if (fromAccountNumber != null) {
+      historyBuilder.fromAccountNumber(fromAccountNumber);
+    }
+    if (toAccountNumber != null) {
+      historyBuilder.toAccountNumber(toAccountNumber);
+    }
 
-	public ArrayList<History> getAccountHistoryList(BankAccount bankAccount, Long historyId) throws Exception {
-		if (historyId == null) {
-			return new ArrayList<History>(bankAccount.getAccountHistory().values());
-		}
-		History history;
-		synchronized(this) {
-			history = bankAccount.getAccountHistory().get(historyId);
-		}
-		if(history == null){
-			throw  new Exception("history Id : " + historyId + " not found.");
-		}
-		return new ArrayList<>(Collections.singletonList(history));
-	}
+    History history = historyBuilder.build();
+
+    synchronized (this) {
+      bankAccount.getAccountHistory().put(historyId, history);
+    }
+  }
+
+  public ArrayList<History> getAccountHistoryList(BankAccount bankAccount, Long historyId)
+      throws Exception {
+    if (historyId == null) {
+      return new ArrayList<History>(bankAccount.getAccountHistory().values());
+    }
+    History history;
+    synchronized (this) {
+      history = bankAccount.getAccountHistory().get(historyId);
+    }
+    if (history == null) {
+      throw new Exception("history Id : " + historyId + " not found.");
+    }
+    return new ArrayList<>(Collections.singletonList(history));
+  }
 
 }

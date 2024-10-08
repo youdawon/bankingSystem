@@ -1,17 +1,14 @@
 package com.bank.account;
 
-import com.bank.account.ConsumerSavingsAccount.Builder;
 import com.bank.stretegy.AccountStrategy;
-import com.bank.stretegy.CommercialSavingsStrategy;
-import com.bank.stretegy.SavingsStrategy;
 import java.util.HashSet;
 import java.util.Set;
 
-public class CommercialSavingAccount extends BankAccount {
+public class CommercialCheckingAccount extends BankAccount {
 
   Set<Person> authorizedUsers;
 
-  private CommercialSavingAccount(AccountHolder accountHolder, Long accountNumber, int pinNumber,
+  public CommercialCheckingAccount(AccountHolder accountHolder, Long accountNumber, int pinNumber,
       double amount, double interestRate, AccountStrategy accountStrategy) {
     super(accountHolder, accountNumber, pinNumber, amount, interestRate, accountStrategy);
     authorizedUsers = new HashSet<>();
@@ -33,7 +30,6 @@ public class CommercialSavingAccount extends BankAccount {
     private int pinNumber;
     private double balance;
     private double interestRate;
-    private double cardLimit;
     private AccountStrategy accountStrategy;
 
     public Builder accountHolder(AccountHolder accountHolder) {
@@ -58,11 +54,6 @@ public class CommercialSavingAccount extends BankAccount {
 
     public Builder interestRate(double interestRate) {
       this.interestRate = interestRate;
-      return this;
-    }
-
-    public Builder cardLimit(double cardLimit) {
-      this.cardLimit = cardLimit;
       return this;
     }
 
